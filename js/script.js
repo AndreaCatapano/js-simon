@@ -4,8 +4,9 @@ const numbersListElement = document.getElementById("numbers-list");
 const answersFormElement = document.getElementById("answers-form");
 const buttonElement = document.querySelector("button");
 const messageElement = document.getElementById("message");
+const instructionsElement = document.getElementById("instructions")
 
-const numbersListArr = [0, 0, 0, 0, 0];
+const numbersListArr = [];
 // Random 
 const randomNumber = () => parseInt(Math.random() * (50 - 1) + 1);
 const numbersListGenerated = generateRandomNumber(numbersListArr);
@@ -25,28 +26,26 @@ buttonElement.addEventListener("click", function (event) {
     const values = takeInput();
 
     if (values === null) {
-        return; // il processo si ferma qui
+        return;
     }
+
     const correctAnswers = checkInput(values, numbersListGenerated);
     const numberOfAnswer = correctAnswers.length;
-    const correctAnswersString = correctAnswers.join(", ")
-    messageElement.innerText = `Ne hai indovinato ${numberOfAnswer}. Di preciso: ${correctAnswersString}`
+    const correctAnswersString = correctAnswers.join(", ");
 
-    console.log(values);
+    checkAnswer(numberOfAnswer, correctAnswersString);
 })
 
 
 // Funzioni
 function generateRandomNumber(arr) {
 
-    for (let i = 0; i < arr.length; i++) {
-        let newNumber;
-        do {
-            newNumber = randomNumber();
-        } while (arr.includes(newNumber))
-
-        arr[i] = newNumber;
-    }
+    while (arr.length < 5) {
+        const newNumber = randomNumber();
+        if (!arr.includes(newNumber)) {
+            arr.push(newNumber);
+        }
+     }
 
     return arr;
 }
@@ -66,6 +65,7 @@ function countdownTimer() {
         clearInterval(gameTimer);
         numbersListElement.classList.add("d-none");
         answersFormElement.classList.remove("d-none");
+        instructionsElement.innerText = "Inserisci tutti i numeri che ricordi(l'ordine non è importante)"
     }
     countdownElement.innerText = count;
     return count;
@@ -104,4 +104,16 @@ function checkInput(solutions, answers) {
         }
     }
     return correctAnswerArray;
+}
+
+function checkAnswer(numOFCorrectAnswer, AnswersString){
+    if (numOFCorrectAnswer > 0){
+        if (numOFCorrectAnswer === 1){
+            messageElement.innerText =  `${numOFCorrectAnswer} risposta esatta!. Di preciso: ${AnswersString}`;
+        } else {
+            messageElement.innerText =  `${numOFCorrectAnswer} risposte esatte!. Di preciso: ${AnswersString}`;
+        }
+    } else {
+        messageElement.innerText = `${numOFCorrectAnswer} risposte esatte! . Riprovaci con più impegno`;
+    }
 }
