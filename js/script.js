@@ -2,6 +2,7 @@
 const countdownElement = document.getElementById("countdown");
 const numbersListElement = document.getElementById("numbers-list");
 const answersFormElement = document.getElementById("answers-form");
+const buttonElement = document.querySelector("button");
 const messageElement = document.getElementById("message");
 
 const numbersListArr = [0, 0, 0, 0, 0];
@@ -18,9 +19,14 @@ const gameTimer = setInterval(countdownTimer, 1000)
 
 //input 
 
-answersFormElement.addEventListener("submit", function (event) {
+buttonElement.addEventListener("click", function (event) {
     event.preventDefault();
+    messageElement.innerText = ""
     const values = takeInput();
+
+    if (values === null) {
+        return; // il processo si ferma qui
+    }
     const correctAnswers = checkInput(values, numbersListGenerated);
     const numberOfAnswer = correctAnswers.length;
     const correctAnswersString = correctAnswers.join(", ")
@@ -34,7 +40,12 @@ answersFormElement.addEventListener("submit", function (event) {
 function generateRandomNumber(arr) {
 
     for (let i = 0; i < arr.length; i++) {
-        arr[i] = randomNumber();
+        let newNumber;
+        do {
+            newNumber = randomNumber();
+        } while (arr.includes(newNumber))
+
+        arr[i] = newNumber;
     }
 
     return arr;
@@ -66,9 +77,15 @@ function takeInput() {
     const values = [];
 
     for (let i = 0; i < inputs.length; i++) {
-        values.push(Number(inputs[i].value))
+        const input = Number(inputs[i].value);
+        const isANumber = !isNaN(input);
+        if (isANumber && input > 0) {
+            values.push(input)
+        } else {
+            messageElement.innerText = "Hai inserito dei valori sbagliati o mancanti, riprova!";
+            return null;
+        }
     }
-
     return values;
 }
 
@@ -86,6 +103,5 @@ function checkInput(solutions, answers) {
             }
         }
     }
-    console.log(correctAnswerArray)
     return correctAnswerArray;
 }
