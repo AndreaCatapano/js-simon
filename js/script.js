@@ -3,7 +3,6 @@
 const countdownElement = document.getElementById("countdown");
 const numbersListElement = document.getElementById("numbers-list");
 const answersFormElement = document.getElementById("answers-form");
-
 const numbersListArr = [0, 0, 0, 0, 0];
 
 numbersListElement.textContent
@@ -14,13 +13,11 @@ generateListElement(numbersListGenerated);
 
 
 //Timer
-
-setInterval(function(){
-    numbersListElement.classList.add("d-none")
-    answersFormElement.classList.remove("d-none")
-}, 10000)
+let count = 10;
 
 
+
+const gameTimer = setInterval(countdownTimer, 1000)
 
 
 // Funzioni
@@ -41,3 +38,14 @@ function generateListElement (arr) {
     }
 }
 
+function countdownTimer(){
+    if(count > 0){
+        count--;
+        } else {
+            clearInterval(gameTimer);
+            numbersListElement.classList.add("d-none");
+            answersFormElement.classList.remove("d-none");
+        }
+        countdownElement.innerText = count;
+        return count;
+}
